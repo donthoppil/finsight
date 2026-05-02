@@ -16,13 +16,18 @@ export type RebalancePhaseItem = {
     worst_drop_3y: number;
     annual_cost_per_10k: number;
   } | null;
+  action?: "buy" | "trim";
   status?: "pending" | "completed" | "rejected";
 };
 
 export type RebalancePhase = {
   id: string;
   phase_number: number;
-  type: "stop_buying_more" | "add_sector_diversity" | "add_stability";
+  type:
+    | "stop_buying_more"
+    | "trim_concentration"
+    | "add_sector_diversity"
+    | "add_stability";
   title: string;
   explanation: string;
   current_state: string;

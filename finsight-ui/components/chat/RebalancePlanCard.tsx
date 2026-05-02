@@ -85,18 +85,22 @@ export function RebalancePlanCard({
     }
 
     if (action === "completed") {
+      const verb = item.action === "trim" ? "sold" : "bought";
       window.dispatchEvent(
         new CustomEvent("chat-prefill", {
           detail: {
-            text: `I bought ${item.estimated_shares} shares of ${item.ticker} at $${item.current_price.toFixed(
+            text: `I ${verb} ${item.estimated_shares} shares of ${item.ticker} at $${item.current_price.toFixed(
               2
             )}`,
             autoSend: true,
           },
         })
       );
-      toast.success(`Marked ${item.ticker} as bought`, {
-        description: "Confirm in chat to add it to your portfolio.",
+      toast.success(`Marked ${item.ticker} as ${verb}`, {
+        description:
+          item.action === "trim"
+            ? "Confirm in chat to update your portfolio."
+            : "Confirm in chat to add it to your portfolio.",
       });
     } else if (action === "rejected") {
       toast(`${item.ticker} skipped`, {
@@ -251,12 +255,20 @@ function PlanItemRow({
   planSaved: boolean;
   onAction: (action: ItemStatus) => void;
 }) {
+  const isTrim = item.action === "trim";
+  const verb = isTrim ? "Sell" : "Buy";
+  const proceedsLabel = isTrim ? "proceeds" : null;
+
   return (
-    <div className="bg-cream-soft/60 border border-line-soft rounded-xl p-3">
+    <div
+      className={`border rounded-xl p-3 ${
+        isTrim ? "bg-warm-amber/10 border-warm-amber/40" : "bg-cream-soft/60 border-line-soft"
+      }`}
+    >
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-ink-primary leading-snug">
-            Buy <span className="tabular-nums">{item.ticker}</span>
+            {verb} <span className="tabular-nums">{item.ticker}</span>
             <span className="text-ink-tertiary font-normal"> — {item.name}</span>
           </p>
           <p className="text-xs text-ink-tertiary mt-1 leading-relaxed">{item.description}</p>
@@ -268,7 +280,7 @@ function PlanItemRow({
           ~{item.estimated_shares} shares @ ${item.current_price.toFixed(2)}
         </span>
         <span className="font-medium text-ink-primary">
-          ~${item.amount_usd.toLocaleString()}
+          {proceedsLabel ? `~$${item.amount_usd.toLocaleString()} ${proceedsLabel}` : `~$${item.amount_usd.toLocaleString()}`}
         </span>
       </div>
 
@@ -279,7 +291,7 @@ function PlanItemRow({
             className="flex-1 bg-forest-primary hover:bg-forest-deep text-white text-xs font-medium py-1.5 rounded-lg flex items-center justify-center gap-1 transition-colors"
           >
             <Check className="w-3 h-3" strokeWidth={3} />
-            I bought it
+            {isTrim ? "I sold it" : "I bought it"}
           </button>
           <button
             onClick={() => onAction("rejected")}
@@ -294,7 +306,7 @@ function PlanItemRow({
       {status === "completed" && (
         <p className="text-xs text-forest-primary font-medium mt-2 flex items-center gap-1">
           <Check className="w-3 h-3" strokeWidth={3} />
-          Marked as bought
+          Marked as {isTrim ? "sold" : "bought"}
         </p>
       )}
       {status === "rejected" && (

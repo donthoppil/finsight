@@ -843,6 +843,7 @@ def rebalance_suggest(req: RebalanceRequest):
                 {
                     "symbol": h.symbol,
                     "shares": h.shares,
+                    "price": current_price,
                     "value": value,
                     "sector": sector,
                     "name": info.get("shortName") or h.symbol,
@@ -908,29 +909,86 @@ def rebalance_suggest(req: RebalanceRequest):
     phases = []
     monthly_budget = req.monthly_contribution if req.monthly_contribution > 0 else portfolio_value * 0.05
 
-    # Phase 1 — concentration (behavioral, no items)
+    # Phase 1 — concentration. Two flavors:
+    #   - severity high (>=50%): trim some now, because new-money-flow alone would
+    #     take literal years to fix it (e.g. 80% AAPL → 25% with $500/mo of new
+    #     money is over a decade). Suggest a partial sell to a softer interim
+    #     target (50%), then let new money handle the rest.
+    #   - severity medium (25-50%): the original "stop buying more, let new money
+    #     flow" approach works in a reasonable timeframe and avoids the tax hit.
     if concentration_issue:
-        phases.append(
-            {
-                "id": "phase_1_concentration",
-                "phase_number": 1,
-                "type": "stop_buying_more",
-                "title": f"Reduce {concentration_issue['holding']} concentration",
-                "explanation": (
-                    f"{concentration_issue['holding']} is {concentration_issue['current_pct']}% of "
-                    "your money — too much in one company. Instead of selling (which has tax "
-                    "implications), let new money flow to other holdings. Over time, your "
-                    "concentration drops naturally."
-                ),
-                "current_state": f"{concentration_issue['holding']}: {concentration_issue['current_pct']}%",
-                "target_state": f"{concentration_issue['holding']}: ~25%",
-                "items": [],
-                "expected_impact": (
-                    f"Concentration drops from {concentration_issue['current_pct']}% to ~25% "
-                    "over 6–12 months as you add other positions."
-                ),
-            }
-        )
+        if concentration_issue["severity"] == "high":
+            interim_target_pct = 50  # trim down to here, new money handles the rest
+            top_price = top_holding.get("price") or 0
+            trim_amount = max(
+                0, round(top_holding["value"] - portfolio_value * (interim_target_pct / 100), 0)
+            )
+            trim_shares = round(trim_amount / top_price, 2) if top_price > 0 else 0
+            phases.append(
+                {
+                    "id": "phase_1_trim",
+                    "phase_number": 1,
+                    "type": "trim_concentration",
+                    "title": f"Trim some {top_holding['symbol']} to bring concentration down faster",
+                    "explanation": (
+                        f"{top_holding['symbol']} is {concentration_issue['current_pct']}% of your money. "
+                        "New contributions alone would take years to get this to a healthy level, so a "
+                        "partial sell now is the practical move. We're suggesting a softer interim "
+                        f"target (~{interim_target_pct}%) — not a full exit — to soften the tax hit. "
+                        "Reinvest the proceeds into the funds in the next phase."
+                    ),
+                    "current_state": f"{top_holding['symbol']}: {concentration_issue['current_pct']}%",
+                    "target_state": (
+                        f"{top_holding['symbol']}: ~{interim_target_pct}% after trim, "
+                        "drifting toward ~25% over time"
+                    ),
+                    "items": [
+                        {
+                            "id": f"item_{top_holding['symbol']}_trim",
+                            "ticker": top_holding["symbol"],
+                            "name": top_holding.get("name") or top_holding["symbol"],
+                            "sector": top_holding.get("sector") or "equity",
+                            "description": (
+                                f"Sell ~{trim_shares} shares of {top_holding['symbol']} (~${trim_amount:,.0f}) "
+                                "to free up cash for the diversifying buys below."
+                            ),
+                            "amount_usd": trim_amount,
+                            "current_price": top_price,
+                            "estimated_shares": trim_shares,
+                            "behavior": None,
+                            "action": "trim",
+                            "status": "pending",
+                        }
+                    ],
+                    "expected_impact": (
+                        f"After this trim, concentration drops from {concentration_issue['current_pct']}% "
+                        f"to ~{interim_target_pct}%. Heads-up: selling at a profit triggers capital "
+                        "gains tax — long-term gains (held > 1 year) are taxed at a lower rate."
+                    ),
+                }
+            )
+        else:
+            phases.append(
+                {
+                    "id": "phase_1_concentration",
+                    "phase_number": 1,
+                    "type": "stop_buying_more",
+                    "title": f"Reduce {concentration_issue['holding']} concentration",
+                    "explanation": (
+                        f"{concentration_issue['holding']} is {concentration_issue['current_pct']}% of "
+                        "your money — too much in one company. Instead of selling (which has tax "
+                        "implications), let new money flow to other holdings. Over time, your "
+                        "concentration drops naturally."
+                    ),
+                    "current_state": f"{concentration_issue['holding']}: {concentration_issue['current_pct']}%",
+                    "target_state": f"{concentration_issue['holding']}: ~25%",
+                    "items": [],
+                    "expected_impact": (
+                        f"Concentration drops from {concentration_issue['current_pct']}% to ~25% "
+                        "over 6–12 months as you add other positions."
+                    ),
+                }
+            )
 
     # Phase 2 — sector diversity
     if sector_issue or missing_sectors:
