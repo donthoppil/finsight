@@ -1,0 +1,116 @@
+{
+  "short_term": [
+    {
+      "ticker": "BSV",
+      "name": "Vanguard Short-Term Bond ETF",
+      "type": "etf",
+      "asset_class": "bond",
+      "description": "Broad short-term bonds — stable, very small swings"
+    },
+    {
+      "ticker": "VBIRX",
+      "name": "Vanguard Short-Term Bond Index Fund",
+      "type": "mutual_fund",
+      "asset_class": "bond",
+      "description": "Mutual fund equivalent of BSV — for retirement accounts"
+    }
+  ],
+  "medium_term": [
+    {
+      "ticker": "BND",
+      "name": "Vanguard Total Bond Market ETF",
+      "type": "etf",
+      "asset_class": "bond",
+      "description": "Broad US bond exposure across all maturities"
+    },
+    {
+      "ticker": "VBTLX",
+      "name": "Vanguard Total Bond Market Index Fund",
+      "type": "mutual_fund",
+      "asset_class": "bond",
+      "description": "Mutual fund equivalent of BND"
+    }
+  ],
+  "long_term": [
+    {
+      "ticker": "VTI",
+      "name": "Vanguard Total Stock Market ETF",
+      "type": "etf",
+      "asset_class": "equity",
+      "description": "Owns a piece of the entire US stock market — broadly diversified"
+    },
+    {
+      "ticker": "VTSAX",
+      "name": "Vanguard Total Stock Market Index Fund",
+      "type": "mutual_fund",
+      "asset_class": "equity",
+      "description": "Mutual fund equivalent of VTI"
+    }
+  ],
+  "growth": [
+    {
+      "ticker": "QQQ",
+      "name": "Invesco Nasdaq-100 ETF",
+      "type": "etf",
+      "asset_class": "equity",
+      "description": "Top 100 non-financial Nasdaq companies — tech-heavy growth"
+    },
+    {
+      "ticker": "VFIAX",
+      "name": "Vanguard 500 Index Fund",
+      "type": "mutual_fund",
+      "asset_class": "equity",
+      "description": "Tracks the S&P 500 — large US companies, broad mix"
+    }
+  ],
+  "sectors": [
+    {
+      "ticker": "XLV",
+      "name": "Health Care Select Sector SPDR",
+      "type": "etf",
+      "asset_class": "equity",
+      "sector": "healthcare",
+      "description": "Major healthcare and pharmaceutical companies — defensive, less affected by economic cycles"
+    },
+    {
+      "ticker": "XLF",
+      "name": "Financial Select Sector SPDR",
+      "type": "etf",
+      "asset_class": "equity",
+      "sector": "financials",
+      "description": "Banks, insurance, and financial services — benefits from rising interest rates"
+    },
+    {
+      "ticker": "XLP",
+      "name": "Consumer Staples Select Sector SPDR",
+      "type": "etf",
+      "asset_class": "equity",
+      "sector": "staples",
+      "description": "Everyday goods companies (food, household, beverages) — stable in downturns"
+    },
+    {
+      "ticker": "XLE",
+      "name": "Energy Select Sector SPDR",
+      "type": "etf",
+      "asset_class": "equity",
+      "sector": "energy",
+      "description": "Oil, gas, and energy companies — hedge against inflation"
+    },
+    {
+      "ticker": "XLU",
+      "name": "Utilities Select Sector SPDR",
+      "type": "etf",
+      "asset_class": "equity",
+      "sector": "utilities",
+      "description": "Power, water, and gas utility companies — steady dividends, low volatility"
+    },
+    {
+      "ticker": "VXUS",
+      "name": "Vanguard Total International Stock ETF",
+      "type": "etf",
+      "asset_class": "equity",
+      "sector": "international",
+      "description": "Stocks from companies outside the US — geographic diversification"
+    }
+  ]
+}

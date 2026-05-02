@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-base: #F1F5FB;
+  --bg-card: #FFFFFF;
+  --bg-soft: #E5EDF7;
+  --bg-input: #F4F8FD;
+
+  --text-primary: #0F1B2D;
+  --text-secondary: #475569;
+  --text-tertiary: #8B97AB;
+
+  --brand-primary: #2563EB;
+  --brand-soft: #60A5FA;
+  --brand-mint: #DBEAFE;
+  --brand-pale: #EFF6FF;
+  --brand-deep: #1D4ED8;
+
+  --accent-amber: #F59E0B;
+  --accent-coral: #EF6961;
+  --accent-rose: #E14F4F;
+
+  --border-soft: #DBE3EE;
+  --border-medium: #BCC6D6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Page-level ambient gradient — sits beneath everything */
+.app-bg {
+  position: relative;
+  background:
+    radial-gradient(1200px 600px at 0% -10%, rgba(96, 165, 250, 0.18) 0%, transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(37, 99, 235, 0.10) 0%, transparent 55%),
+    radial-gradient(800px 600px at 70% 110%, rgba(96, 165, 250, 0.12) 0%, transparent 60%),
+    var(--bg-base);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom scrollbar — slate */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-soft);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-medium);
+}
+
+/* Slider styling for onboarding */
+.range-warm {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: var(--bg-soft);
+  border-radius: 999px;
+  outline: none;
+}
+.range-warm::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  cursor: pointer;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 6px rgba(15, 27, 45, 0.18);
+  transition: transform 200ms ease-out;
+}
+.range-warm::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+.range-warm::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  cursor: pointer;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 6px rgba(15, 27, 45, 0.18);
+}
+
+/* Hide number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Floating ambient blob — used for dashboard background motion */
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  pointer-events: none;
+  opacity: 0.45;
+  will-change: transform;
+}

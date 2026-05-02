@@ -1,0 +1,47 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# Env (local secrets — NEVER commit)
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.Python
+*.egg-info/
+
+# Claude / agent state
+.claude/
+
+# Logs
+*.log
