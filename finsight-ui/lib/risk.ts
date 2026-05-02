@@ -27,6 +27,7 @@ export type RiskSnapshot = {
     symbol: string;
     pct_of_portfolio: number;
     value: number;
+    is_fund?: boolean;
   } | null;
   estimates: { bad_month_loss: number; crash_loss: number };
   mismatch: {

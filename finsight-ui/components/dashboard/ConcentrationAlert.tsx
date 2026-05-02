@@ -7,10 +7,12 @@ export function ConcentrationAlert({
   symbol,
   pct,
   value,
+  isFund,
 }: {
   symbol: string;
   pct: number;
   value: number;
+  isFund?: boolean;
 }) {
   const askCoach = () => {
     window.dispatchEvent(
@@ -21,6 +23,13 @@ export function ConcentrationAlert({
       })
     );
   };
+
+  // A sector ETF still concentrates risk at the sector level — but it's not
+  // "one company" risk. Phrase the warning accordingly.
+  const positionLabel = isFund ? "one fund" : "one company";
+  const riskBlurb = isFund
+    ? `It's a fund holding many companies in one sector, so a sector-wide drop hits hard.`
+    : `If ${symbol} has a bad day, your whole portfolio feels it.`;
 
   const suggestFix = () => {
     window.dispatchEvent(
@@ -45,9 +54,8 @@ export function ConcentrationAlert({
           Heads up — {symbol} is {pct}% of your portfolio
         </p>
         <p className="text-sm text-ink-secondary mt-1 leading-relaxed">
-          That&apos;s a lot in one company (
-          <span className="tabular-nums">${Math.round(value).toLocaleString()}</span>). If {symbol}
-          {" "}has a bad day, your whole portfolio feels it.
+          That&apos;s a lot in {positionLabel} (
+          <span className="tabular-nums">${Math.round(value).toLocaleString()}</span>). {riskBlurb}
         </p>
         <div className="flex items-center gap-3 mt-2">
           <button

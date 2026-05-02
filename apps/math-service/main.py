@@ -121,6 +121,8 @@ def get_history(req: HistoryRequest):
 # ===========================================================
 
 # Tickers we treat as "diversified funds" rather than individual-stock concentration.
+# A sector ETF (XLV, XLF, etc.) holds 30–80 companies inside it — still concentrated
+# at the *sector* level, but absolutely not "one company" risk like NVDA or AAPL.
 DIVERSIFIED_FUNDS = {
     # Total market
     "VTI", "VTSAX", "ITOT", "SCHB",
@@ -132,8 +134,14 @@ DIVERSIFIED_FUNDS = {
     "DIA", "IWM", "VTV", "VUG", "VEA", "VXUS", "VWO",
     # Dividend ETFs
     "SCHD", "VYM", "DVY", "HDV", "NOBL",
+    # Sector SPDRs — each holds 30+ companies in one sector
+    "XLV", "XLF", "XLK", "XLE", "XLP", "XLU", "XLY", "XLB", "XLI", "XLC", "XLRE",
+    # Other common sector / thematic ETFs
+    "VHT", "VFH", "VGT", "VDE", "VDC", "VPU", "VCR", "VAW", "VIS", "VOX", "VNQ",
+    # Factor / smart-beta
+    "MTUM", "USMV", "QUAL", "VLUE",
     # Bond ETFs (still diversifying even if nominally outside our scope)
-    "BND", "AGG", "IEF", "TLT", "SHY", "TIP", "LQD", "HYG",
+    "BND", "AGG", "IEF", "TLT", "SHY", "TIP", "LQD", "HYG", "BSV", "VBIRX", "VBTLX",
     # Gold (diversifier)
     "GLD", "IAU", "SGOL",
 }
@@ -261,6 +269,7 @@ def risk_snapshot(req: RiskRequest):
             "symbol": top_holding["symbol"],
             "pct_of_portfolio": round(top_holding_pct, 1),
             "value": round(top_holding["value"], 2),
+            "is_fund": top_holding["symbol"].upper() in DIVERSIFIED_FUNDS,
         }
 
     # ---------- Component 2: stock heaviness ----------

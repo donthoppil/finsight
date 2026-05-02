@@ -76,6 +76,7 @@ export function PortfolioPanel() {
             symbol={risk.concentration_alert.symbol}
             pct={risk.concentration_alert.pct_of_portfolio}
             value={risk.concentration_alert.value}
+            isFund={risk.concentration_alert.is_fund}
           />
         )}
         {risk?.mismatch && (
