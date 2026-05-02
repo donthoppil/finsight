@@ -4,6 +4,15 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { useMode } from "@/components/toggle/ModeContext";
 import type { FundOption } from "@/lib/recommendations";
+import { useProfile } from "@/lib/store";
+
+// Shares to suggest per pick: split one month of contribution across all picks.
+// Round to whole shares, clamp to >= 1 so the prefill is always a valid trade.
+function suggestSharesPerPick(monthlyContribution: number, optionCount: number, price: number): number {
+  if (!monthlyContribution || monthlyContribution <= 0 || optionCount <= 0 || price <= 0) return 0;
+  const dollarsPerPick = monthlyContribution / optionCount;
+  return Math.max(1, Math.round(dollarsPerPick / price));
+}
 
 export function RecommendationCards({
   options,
@@ -15,11 +24,19 @@ export function RecommendationCards({
   disclaimer: string;
 }) {
   const { mode } = useMode();
+  const monthlyContribution = useProfile((s) => Number(s.profile?.monthly_contribution ?? 0));
   const topFitScore = options.length > 0 ? options[0].fit_score : 0;
 
   return (
     <div className="my-3">
       <p className="text-sm text-ink-primary mb-3">{intro_text}</p>
+
+      {monthlyContribution > 0 && (
+        <p className="text-xs text-ink-tertiary mb-3">
+          Buy amounts below are sized from your ${monthlyContribution.toLocaleString()}/month
+          contribution, split across these picks.
+        </p>
+      )}
 
       {/* Stack vertically inside the chat panel — chat width is too narrow for 3-up. */}
       <div className="space-y-2.5">
@@ -30,6 +47,7 @@ export function RecommendationCards({
             rank={i + 1}
             isTopPick={option.fit_score === topFitScore && i === 0}
             mode={mode}
+            suggestedShares={suggestSharesPerPick(monthlyContribution, options.length, option.current_price)}
           />
         ))}
       </div>
@@ -44,19 +62,28 @@ function FundCard({
   rank,
   isTopPick,
   mode,
+  suggestedShares,
 }: {
   option: FundOption;
   rank: number;
   isTopPick: boolean;
   mode: "simple" | "detailed";
+  suggestedShares: number;
 }) {
+  // If we don't have a monthly_contribution to size against, leave the share count blank
+  // so the user types it themselves rather than committing to a fake 10-share default.
   const handleAdd = () => {
-    window.dispatchEvent(
-      new CustomEvent("chat-prefill", {
-        detail: { text: `I bought 10 shares of ${option.ticker}` },
-      })
-    );
+    const text =
+      suggestedShares > 0
+        ? `I bought ${suggestedShares} ${suggestedShares === 1 ? "share" : "shares"} of ${option.ticker}`
+        : `I bought  shares of ${option.ticker}`;
+    window.dispatchEvent(new CustomEvent("chat-prefill", { detail: { text } }));
   };
+
+  const buttonLabel =
+    suggestedShares > 0
+      ? `Buy ~${suggestedShares} ${suggestedShares === 1 ? "share" : "shares"} (~$${Math.round(suggestedShares * option.current_price).toLocaleString()})`
+      : "Add to portfolio";
 
   return (
     <motion.div
@@ -128,7 +155,7 @@ function FundCard({
         onClick={handleAdd}
         className="w-full bg-forest-primary hover:bg-forest-deep text-white text-xs font-medium py-2 rounded-lg transition-all hover:translate-y-[-1px] mt-auto"
       >
-        Add to portfolio
+        {buttonLabel}
       </button>
     </motion.div>
   );

@@ -85,12 +85,18 @@ export function generateProfileSummary(profile: UserProfile | null | undefined):
   }
 
   if (profile.amount_invested && profile.amount_invested > 0) {
-    parts.push(`You have $${Number(profile.amount_invested).toLocaleString()} invested right now.`);
+    parts.push(
+      `MONEY ALREADY INVESTED (do not suggest buying this amount): $${Number(profile.amount_invested).toLocaleString()}.`
+    );
   }
 
   if (profile.monthly_contribution && profile.monthly_contribution > 0) {
     parts.push(
-      `You add about $${Number(profile.monthly_contribution).toLocaleString()} each month.`
+      `DEPLOYABLE CASH per month (use this as the basis for any buy suggestion): $${Number(profile.monthly_contribution).toLocaleString()}.`
+    );
+  } else {
+    parts.push(
+      `DEPLOYABLE CASH per month: not provided. Do not suggest a dollar buy amount — suggest percentage allocations instead, or ask the user how much they want to invest right now.`
     );
   }
 
