@@ -77,6 +77,11 @@ export default function DashboardPage() {
   const [thinking, setThinking] = useState(false);
   const [scenarioRequest, setScenarioRequest] = useState<string | null>(null);
 
+  // Track viewport so we mount the chat (and ChatInput's window-level
+  // chat-prefill listener) in exactly ONE layout. Mounting both
+  // layouts at once caused every "I bought it" prefill to fire twice.
+  const [isDesktop, setIsDesktop] = useState(false);
+
   const refreshPortfolio = usePortfolio((s) => s.refresh);
   const snapshot = usePortfolio((s) => s.snapshot);
 
@@ -91,6 +96,14 @@ export default function DashboardPage() {
     }
     refreshPortfolio();
   }, [refreshPortfolio]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    setIsDesktop(mq.matches);
+    const handler = () => setIsDesktop(mq.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // Greeting depends on whether the portfolio has anything in it.
   // Wait for the snapshot to load before deciding.
@@ -109,68 +122,72 @@ export default function DashboardPage() {
       <TopBar />
 
       <main className="relative flex-1 px-3 sm:px-4 pb-4 pt-3 min-h-0">
-        <div className="lg:hidden space-y-4">
-          <ThinkingPanel active={thinking} />
-          <PortfolioPanel />
-          <div className="min-h-[600px]">
-            <CenterTabs
-              messages={messages}
-              setMessages={setMessages}
-              thinking={thinking}
-              setThinking={setThinking}
-              scenarioRequest={scenarioRequest}
-              onScenarioConsumed={() => setScenarioRequest(null)}
-            />
+        {!isDesktop && (
+          <div className="space-y-4">
+            <ThinkingPanel active={thinking} />
+            <PortfolioPanel />
+            <div className="min-h-[600px]">
+              <CenterTabs
+                messages={messages}
+                setMessages={setMessages}
+                thinking={thinking}
+                setThinking={setThinking}
+                scenarioRequest={scenarioRequest}
+                onScenarioConsumed={() => setScenarioRequest(null)}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="hidden lg:block h-full">
-          <Group orientation="horizontal" className="h-full">
-            <Panel defaultSize="20%" minSize="10%" maxSize="40%" className="h-full min-w-0 overflow-hidden">
-              <motion.aside
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.45, delay: 0.05, ease: "easeOut" }}
-                className="h-full min-w-0"
-              >
-                <ThinkingPanel active={thinking} />
-              </motion.aside>
-            </Panel>
+        {isDesktop && (
+          <div className="h-full">
+            <Group orientation="horizontal" className="h-full">
+              <Panel defaultSize="20%" minSize="10%" maxSize="40%" className="h-full min-w-0 overflow-hidden">
+                <motion.aside
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.45, delay: 0.05, ease: "easeOut" }}
+                  className="h-full min-w-0"
+                >
+                  <ThinkingPanel active={thinking} />
+                </motion.aside>
+              </Panel>
 
-            <ResizeHandle />
+              <ResizeHandle />
 
-            <Panel defaultSize="50%" minSize="25%" maxSize="70%" className="h-full min-w-0 overflow-hidden">
-              <motion.section
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: 0.15, ease: "easeOut" }}
-                className="h-full overflow-y-auto min-w-0"
-              >
-                <PortfolioPanel />
-              </motion.section>
-            </Panel>
+              <Panel defaultSize="50%" minSize="25%" maxSize="70%" className="h-full min-w-0 overflow-hidden">
+                <motion.section
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.15, ease: "easeOut" }}
+                  className="h-full overflow-y-auto min-w-0"
+                >
+                  <PortfolioPanel />
+                </motion.section>
+              </Panel>
 
-            <ResizeHandle />
+              <ResizeHandle />
 
-            <Panel defaultSize="30%" minSize="20%" maxSize="60%" className="h-full min-w-0 overflow-hidden">
-              <motion.section
-                initial={{ opacity: 0, x: 16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.45, delay: 0.25, ease: "easeOut" }}
-                className="h-full min-w-0"
-              >
-                <CenterTabs
-                  messages={messages}
-                  setMessages={setMessages}
-                  thinking={thinking}
-                  setThinking={setThinking}
-                  scenarioRequest={scenarioRequest}
-                  onScenarioConsumed={() => setScenarioRequest(null)}
-                />
-              </motion.section>
-            </Panel>
-          </Group>
-        </div>
+              <Panel defaultSize="30%" minSize="20%" maxSize="60%" className="h-full min-w-0 overflow-hidden">
+                <motion.section
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.45, delay: 0.25, ease: "easeOut" }}
+                  className="h-full min-w-0"
+                >
+                  <CenterTabs
+                    messages={messages}
+                    setMessages={setMessages}
+                    thinking={thinking}
+                    setThinking={setThinking}
+                    scenarioRequest={scenarioRequest}
+                    onScenarioConsumed={() => setScenarioRequest(null)}
+                  />
+                </motion.section>
+              </Panel>
+            </Group>
+          </div>
+        )}
       </main>
     </div>
   );
