@@ -106,7 +106,7 @@ export default function LoginPage() {
               onClick={handleDemoLogin}
               className="mt-8 w-full bg-forest-primary hover:bg-forest-deep text-white font-medium px-6 py-4 rounded-xl transition-all hover:translate-y-[-1px] active:translate-y-0 shadow-card"
             >
-              Login as Demo User (Alex)
+              Login as Demo User (Priya)
             </button>
             <p className="mt-3 text-xs text-ink-tertiary text-center">
               Demo mode — full auth available on request

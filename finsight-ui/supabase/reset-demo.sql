@@ -13,7 +13,7 @@ delete from profile_changes where user_id = '00000000-0000-0000-0000-00000000000
 delete from rebalance_items where user_id = '00000000-0000-0000-0000-000000000001';
 
 -- 2. Reset the user profile to a fresh state. Keep id + email + name
---    so the "Welcome Alex!" greeting still works and lib/supabase.ts
+--    so the "Welcome Priya!" greeting still works and lib/supabase.ts
 --    DEMO_USER_ID still resolves.
 update users set
   age                   = null,

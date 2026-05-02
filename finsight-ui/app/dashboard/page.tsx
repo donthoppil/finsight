@@ -45,7 +45,7 @@ const EMPTY_PORTFOLIO_GREETING = {
   id: "greeting-empty",
   role: "assistant" as const,
   text:
-    "Welcome Alex! Your portfolio is empty. Tell me what you already own — like \"I have 25 shares of Apple\" — or ask me to suggest some funds to start with.",
+    "Welcome Priya! Your portfolio is empty. Tell me what you already own — like \"I have 25 shares of Apple\" — or ask me to suggest some funds to start with.",
   suggested_replies: [
     "What should I invest in?",
     "I have 25 shares of Apple",

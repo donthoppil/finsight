@@ -1,6 +1,6 @@
 export const DEMO_USER = {
-  name: "Alex",
-  email: "alex@demo.com",
+  name: "Priya",
+  email: "priya@demo.com",
   age: 32,
   goal: "Buy a house",
   goal_timeline_years: 2,
@@ -113,7 +113,7 @@ export const PROACTIVE_MESSAGE: ChatMessage = {
   role: "assistant",
   proactive: true,
   text:
-    "Hi Alex — I noticed your portfolio drifted from your target this month. Your house goal is in 2 years, but ~36% of your money is sitting in single stocks. Want to talk about what we should do?",
+    "Hi Priya — I noticed your portfolio drifted from your target this month. Your house goal is in 2 years, but ~36% of your money is sitting in single stocks. Want to talk about what we should do?",
   suggested_replies: ["Yes, what should I do?", "What does this mean?", "Not now, thanks"],
   citations: [],
   confidence: "high",

@@ -64,8 +64,8 @@ alter table messages disable row level security;
 insert into users (id, email, name, age, goal, goal_timeline_years, risk_feel, amount_invested)
 values (
   '00000000-0000-0000-0000-000000000001',
-  'alex@demo.com',
-  'Alex',
+  'priya@demo.com',
+  'Priya',
   32,
   'Buy a house',
   2,
