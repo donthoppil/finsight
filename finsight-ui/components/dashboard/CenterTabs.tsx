@@ -52,7 +52,14 @@ export function CenterTabs({
             return (
               <button
                 key={t.id}
-                onClick={() => setTab(t.id)}
+                onClick={() => {
+                  setTab(t.id);
+                  // Clicking the What-If tab itself should always land on the
+                  // scenario grid — not on whatever scenario was last open.
+                  // Deep-links from chat (scenarioRequest) still work because
+                  // they set openScenario in their own effect.
+                  if (t.id === "whatif") setOpenScenario(null);
+                }}
                 className={`relative px-4 py-3 text-sm font-medium transition-colors ${
                   active ? "text-forest-primary" : "text-ink-tertiary hover:text-ink-primary"
                 }`}
